@@ -3787,3 +3787,29 @@ function getRootDomain(useSubdomain = false) {
     // Return the root domain with or without a leading dot based on useSubdomain
     return rootDomain ? (useSubdomain ? '.' + rootDomain : rootDomain) : hostname;
 }
+
+
+const videos = document.querySelectorAll('video');
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.play();
+    } else {
+      entry.target.pause();
+    }
+  });
+}, {
+  threshold: 0.3
+});
+
+videos.forEach(video => {
+  video.pause();
+  observer.observe(video);
+});
+
+
+
+
+
+
