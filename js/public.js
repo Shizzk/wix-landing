@@ -3789,24 +3789,41 @@ function getRootDomain(useSubdomain = false) {
 }
 
 
-const videos = document.querySelectorAll('video');
+document.addEventListener('DOMContentLoaded', () => {
+  const videos = document.querySelectorAll('.bg-video');
 
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.play();
-    } else {
-      entry.target.pause();
+  if (!('IntersectionObserver' in window)) {
+    videos.forEach(v => {
+      v.muted = true;
+      v.play().catch(() => {});
+    });
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        const video = entry.target;
+
+        if (entry.isIntersecting) {
+          video.muted = true;
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      });
+    },
+    {
+      threshold: 0.2
     }
+  );
+
+  videos.forEach(video => {
+    video.pause();
+    observer.observe(video);
   });
-}, {
-  threshold: 0.3
 });
 
-videos.forEach(video => {
-  video.pause();
-  observer.observe(video);
-});
 
 
 
